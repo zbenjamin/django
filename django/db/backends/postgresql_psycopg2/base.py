@@ -62,6 +62,14 @@ class DatabaseFeatures(BaseDatabaseFeatures):
     nulls_order_largest = True
 
 
+class DatabaseValidation(BaseDatabaseValidation):
+    def validate_field(self, errors, opts, f):
+        if f.db_index_type is not None:
+            if not isinstance(f.db_index_type, basestring):
+                errors.add(opts, '"%s": "db_index_type" should be either None or a string.' % f.name)
+            if f.db_index_type.lower() not in ('btree', 'hash', 'gist', 'gin'):
+                errors.add(opts, '"%s": "db_index_type" index type "%s" is not supported by backend.' % (f.name, f.db_index_type))
+
 class DatabaseWrapper(BaseDatabaseWrapper):
     vendor = 'postgresql'
     operators = {
@@ -95,7 +103,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         self.client = DatabaseClient(self)
         self.creation = DatabaseCreation(self)
         self.introspection = DatabaseIntrospection(self)
-        self.validation = BaseDatabaseValidation(self)
+        self.validation = DatabaseValidation(self)
 
     def get_connection_params(self):
         settings_dict = self.settings_dict

@@ -495,3 +495,6 @@ class BaseDatabaseCreation(object):
             settings_dict['ENGINE'],
             settings_dict['NAME']
         )
+
+    def supports_db_index_type(self, index_type):
+        return False

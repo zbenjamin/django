@@ -99,10 +99,10 @@ class Field(object):
 
     def __init__(self, verbose_name=None, name=None, primary_key=False,
             max_length=None, unique=False, blank=False, null=False,
-            db_index=False, rel=None, default=NOT_PROVIDED, editable=True,
-            serialize=True, unique_for_date=None, unique_for_month=None,
-            unique_for_year=None, choices=None, help_text='', db_column=None,
-            db_tablespace=None, auto_created=False, validators=[],
+            db_index=False, db_index_type=None, rel=None, default=NOT_PROVIDED,
+            editable=True, serialize=True, unique_for_date=None,
+            unique_for_month=None, unique_for_year=None, choices=None, help_text='',
+            db_column=None, db_tablespace=None, auto_created=False, validators=[],
             error_messages=None):
         self.name = name
         self.verbose_name = verbose_name  # May be set by set_attributes_from_name
@@ -122,6 +122,10 @@ class Field(object):
         self.db_column = db_column
         self.db_tablespace = db_tablespace or settings.DEFAULT_INDEX_TABLESPACE
         self.auto_created = auto_created
+        self.db_index_type = db_index_type
+
+        if db_index_type is not None and db_index == False:
+            db_index = True
 
         # Set db_index to True if the field has a relationship and doesn't
         # explicitly set db_index.

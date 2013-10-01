@@ -80,3 +80,7 @@ class DatabaseCreation(BaseDatabaseCreation):
                 output.append(get_index_sql('%s_%s_like' % (db_table, f.column),
                                             ' text_pattern_ops'))
         return output
+
+    def supports_db_index_type(self, index_type):
+        return isinstance(index_type, basestring) \
+            and index_type.lower() in ('btree', 'hash', 'gist', 'gin')
